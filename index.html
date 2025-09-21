@@ -740,10 +740,12 @@
                             🔄 Comenzar de nuevo
                         </button>
                         <p class="final-message">
-                            "Como los girasoles que siempre siguen al sol, 
-                            mi corazón siempre te sigue a ti. 
-                            Eres la luz que ilumina cada uno de mis días 
-                            y la razón por la que mi amor florece cada amanecer."
+                            "No se que nos depare el destino
+                             el futuro es incierto pero
+                             cada dia de la mano a tu lado
+                             quiero estar esperando mis miedos 
+                             mas aferrados, gracias por ser estar y existir 
+                             Te amo"
                         </p>
                     </div>
                 </div>
@@ -751,13 +753,13 @@
         </div>
     </div>
 
-        <script>
+    <script>
             // Configuración de la aplicación - Girasoles
             const CONFIG = {
                 totalPetals: 16, 
                 totalFlowers: 1,  
                 storageKey: 'sunflowerLoveData',
-                audioPath: 'assets/audio/carlacancion2.mp3', // Ruta corregida para MP3
+                audioPath: 'https://drive.google.com/uc?export=download&id=1HdyXLACosat4NjE39oOu-B0RGuPVIhFc', // URL directa de Google Drive
                 imagesPath: 'assets/images/' // Ruta para imágenes locales
             };
 
@@ -794,7 +796,8 @@
                 petalCount: CONFIG.totalPetals,
                 pickedPetals: new Set(),
                 currentPetalId: null,
-                isCompleted: false
+                isCompleted: false,
+                showingFinalPopup: false
             };
 
             // Referencias DOM
@@ -835,7 +838,7 @@
 
             // Configurar event listeners
             function setupEventListeners() {
-                // Cerrar popup
+                // Cerrar popup de pétalo
                 elements.closeBtn.addEventListener('click', closePopup);
                 elements.popupOverlay.addEventListener('click', function(e) {
                     if (e.target === elements.popupOverlay) {
@@ -843,27 +846,27 @@
                     }
                 });
                 
-                // Descargar audio (corregido para descargar MP3)
+                // Descargar audio desde Google Drive
                 elements.downloadBtn.addEventListener('click', downloadAudio);
                 
-                // Botón de reinicio
-                elements.restartBtn.addEventListener('click', () => {
-                    sessionStorage.setItem('shouldRestart', 'true');
-                    location.reload();
-                });
+                // Botón de reinicio - solo disponible cuando se cierra el popup final
+                elements.restartBtn.addEventListener('click', handleRestart);
                 
-                // Cerrar popup final
+                // Cerrar popup final - aquí permitimos reiniciar
                 elements.finalPopup.addEventListener('click', function(e) {
                     if (e.target === elements.finalPopup) {
-                        elements.finalPopup.classList.remove('active');
+                        closeFinalPopup();
                     }
                 });
                 
                 // Escapar para cerrar popups
                 document.addEventListener('keydown', function(e) {
                     if (e.key === 'Escape') {
-                        closePopup();
-                        elements.finalPopup.classList.remove('active');
+                        if (appState.showingFinalPopup) {
+                            closeFinalPopup();
+                        } else {
+                            closePopup();
+                        }
                     }
                 });
             }
@@ -932,7 +935,7 @@
 
             // Manejar clic en pétalo
             function handlePetalClick(petalId) {
-                if (appState.pickedPetals.has(petalId)) return;
+                if (appState.pickedPetals.has(petalId) || appState.showingFinalPopup) return;
                 
                 console.log(`🌻 Pétalo ${petalId + 1} seleccionado`);
                 
@@ -959,7 +962,6 @@
                         if (appState.petalCount === 0) {
                             appState.isCompleted = true;
                             saveToStorage();
-                            setTimeout(() => showFinalPopup(), 1500);
                         }
                     }, 1200);
                 }
@@ -1043,9 +1045,17 @@
                 }, 100);
             }
 
-            // Cerrar popup
+            // Cerrar popup de pétalo
             function closePopup() {
                 elements.popupOverlay.classList.remove('active');
+                
+                // Si era el último pétalo, mostrar popup final después de cerrar
+                if (appState.isCompleted && appState.petalCount === 0 && !appState.showingFinalPopup) {
+                    setTimeout(() => {
+                        showFinalPopup();
+                    }, 500); // Pequeña pausa para evitar overlap
+                }
+                
                 appState.currentPetalId = null;
                 
                 elements.popupImage.style.animation = '';
@@ -1077,6 +1087,7 @@
 
             // Mostrar popup final
             function showFinalPopup() {
+                appState.showingFinalPopup = true;
                 elements.finalPopup.classList.add('active');
                 createGoldenHeartRain();
                 document.body.style.background = 'linear-gradient(135deg, #fffbeb, #fef3c7, #fde68a)';
@@ -1084,6 +1095,77 @@
                 setTimeout(() => {
                     createCelebrationBurst();
                 }, 500);
+            }
+
+            // Cerrar popup final
+            function closeFinalPopup() {
+                appState.showingFinalPopup = false;
+                elements.finalPopup.classList.remove('active');
+                document.body.style.background = '';
+                
+                // Mostrar opción de reinicio después de cerrar el popup final
+                showRestartOption();
+            }
+
+            // Mostrar opción de reinicio
+            function showRestartOption() {
+                const restartMessage = document.createElement('div');
+                restartMessage.style.cssText = `
+                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                    background: linear-gradient(135deg, #ffd700, #f59e0b);
+                    color: #451a03; padding: 2rem; border-radius: 20px;
+                    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+                    z-index: 1003; font-family: 'Playfair Display', serif;
+                    text-align: center; max-width: 400px;
+                    animation: fadeInScale 0.5s ease-out;
+                `;
+                
+                restartMessage.innerHTML = `
+                    <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem;">🌻 ¿Quieres vivir esta experiencia de nuevo? 🌻</h3>
+                    <p style="margin: 0 0 1.5rem 0; line-height: 1.5;">Los pétalos pueden crecer una vez más para revivir todos nuestros hermosos recuerdos.</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <button id="confirmRestart" style="
+                            background: #dc2626; color: white; border: none; padding: 0.8rem 1.5rem;
+                            border-radius: 10px; cursor: pointer; font-weight: 500;
+                            transition: all 0.3s ease;
+                        ">Sí, reiniciar 🔄</button>
+                        <button id="cancelRestart" style="
+                            background: #6b7280; color: white; border: none; padding: 0.8rem 1.5rem;
+                            border-radius: 10px; cursor: pointer; font-weight: 500;
+                            transition: all 0.3s ease;
+                        ">No, mantener así ❤️</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(restartMessage);
+                
+                // Event listeners para los botones
+                document.getElementById('confirmRestart').addEventListener('click', () => {
+                    restartMessage.remove();
+                    resetApp(false);
+                });
+                
+                document.getElementById('cancelRestart').addEventListener('click', () => {
+                    restartMessage.remove();
+                });
+                
+                // Cerrar con ESC
+                const handleEscape = (e) => {
+                    if (e.key === 'Escape') {
+                        restartMessage.remove();
+                        document.removeEventListener('keydown', handleEscape);
+                    }
+                };
+                document.addEventListener('keydown', handleEscape);
+            }
+
+            // Manejar botón de reinicio
+            function handleRestart() {
+                if (appState.showingFinalPopup) {
+                    closeFinalPopup();
+                } else {
+                    showRestartOption();
+                }
             }
 
             // Crear lluvia de corazones dorados
@@ -1158,50 +1240,60 @@
                 setTimeout(() => heart.remove(), 2000);
             }
 
-            // Descargar audio (CORREGIDO para descargar MP3 desde assets/audio/)
+            // Descargar audio desde Google Drive
             function downloadAudio() {
-                // Crear un elemento audio para probar si el archivo existe
-                const audio = new Audio();
+                showLoadingMessage('💛 Preparando descarga desde Google Drive...');
                 
-                audio.addEventListener('canplaythrough', function() {
-                    // Si el audio se puede reproducir, entonces existe - proceder con descarga
-                    fetch(CONFIG.audioPath)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            return response.blob();
-                        })
-                        .then(blob => {
-                            const url = URL.createObjectURL(blob);
-                            const link = document.createElement('a');
-                            link.href = url;
-                            link.download = 'carlacancion2.mp3';
-                            link.style.display = 'none';
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                            URL.revokeObjectURL(url);
-                            
-                            showSuccessMessage('💛 ¡Canción descargada exitosamente! Disfruta de nuestro tema especial.');
-                        })
-                        .catch(error => {
-                            console.error('Error al descargar:', error);
-                            showErrorMessage('❌ Error al descargar la canción. Verifica que el archivo existe en assets/audio/');
-                        });
-                });
+                // Crear enlace de descarga directa
+                const link = document.createElement('a');
+                link.href = CONFIG.audioPath;
+                link.download = 'carlacancion2.mp3';
+                link.style.display = 'none';
                 
-                audio.addEventListener('error', function(e) {
-                    // Si hay error al cargar el audio, mostrar mensaje de error
-                    console.error('Audio no encontrado:', e);
-                    showErrorMessage('❌ No se encontró la canción en assets/audio/carlacancion2.mp3. Verifica que el archivo existe.');
-                });
-                
-                // Intentar cargar el audio para verificar si existe
-                audio.src = CONFIG.audioPath;
+                // Intentar descarga
+                try {
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    setTimeout(() => {
+                        hideLoadingMessage();
+                        showSuccessMessage('💛 ¡Descarga iniciada! La canción se está descargando desde Google Drive.');
+                    }, 1000);
+                    
+                } catch (error) {
+                    console.error('Error al iniciar descarga:', error);
+                    hideLoadingMessage();
+                    showErrorMessage('❌ Error al iniciar la descarga. Intenta de nuevo en unos segundos.');
+                }
             }
 
-            // Nueva función para mostrar mensajes de error
+            // Mostrar mensaje de carga
+            function showLoadingMessage(message) {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.id = 'loadingMessage';
+                loadingDiv.style.cssText = `
+                    position: fixed; top: 20px; right: 20px;
+                    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+                    color: white; padding: 1rem 1.5rem; border-radius: 15px;
+                    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); z-index: 1001;
+                    animation: slideInRight 0.5s ease-out; font-family: 'Playfair Display', serif;
+                    font-weight: 500; max-width: 300px; font-size: 0.9rem; line-height: 1.4;
+                `;
+                loadingDiv.textContent = message;
+                document.body.appendChild(loadingDiv);
+            }
+
+            // Ocultar mensaje de carga
+            function hideLoadingMessage() {
+                const loadingDiv = document.getElementById('loadingMessage');
+                if (loadingDiv) {
+                    loadingDiv.style.animation = 'slideOutRight 0.5s ease-out forwards';
+                    setTimeout(() => loadingDiv.remove(), 500);
+                }
+            }
+
+            // Función para mostrar mensajes de error
             function showErrorMessage(message) {
                 const errorDiv = document.createElement('div');
                 errorDiv.style.cssText = `
@@ -1249,6 +1341,7 @@
                     pickedPetals: Array.from(appState.pickedPetals),
                     petalCount: appState.petalCount,
                     isCompleted: appState.isCompleted,
+                    showingFinalPopup: appState.showingFinalPopup,
                     lastUpdated: new Date().toISOString()
                 };
                 
@@ -1266,17 +1359,20 @@
                     if (saved) {
                         const data = JSON.parse(saved);
 
-                        // Reiniciar siempre al cargar
+                        // Reiniciar siempre al cargar para evitar bugs
                         appState.pickedPetals = new Set();
                         appState.petalCount = CONFIG.totalPetals;
                         appState.isCompleted = false;
+                        appState.showingFinalPopup = false;
 
-                        console.log(`🌻 Datos reiniciados: ${appState.pickedPetals.size} pétalos recogidos`);
+                        console.log(`🌻 Aplicación reiniciada limpiamente`);
 
                         // Guardar inmediatamente para reflejar reinicio
                         localStorage.setItem(CONFIG.storageKey, JSON.stringify({
                             pickedPetals: Array.from(appState.pickedPetals),
-                            isCompleted: appState.isCompleted
+                            petalCount: appState.petalCount,
+                            isCompleted: appState.isCompleted,
+                            showingFinalPopup: appState.showingFinalPopup
                         }));
                     }
                 } catch (e) {
@@ -1295,12 +1391,17 @@
                     petalCount: CONFIG.totalPetals,
                     pickedPetals: new Set(),
                     currentPetalId: null,
-                    isCompleted: false
+                    isCompleted: false,
+                    showingFinalPopup: false
                 };
                 
                 generateSunflower();
                 updatePetalCounter();
                 elements.finalPopup.classList.remove('active');
+                elements.popupOverlay.classList.remove('active');
+                document.body.style.background = '';
+                
+                showSuccessMessage('🌻 ¡Los pétalos han vuelto a florecer! Disfruta la experiencia de nuevo.');
             }
 
             // Exponer funciones globales para debugging
@@ -1312,8 +1413,9 @@
                 MEMORIES
             };
 
-            console.log('Girasol del Amor cargado completamente. ¡Que disfrutes esta sorpresa especial!');
+            console.log('🌻 Girasol del Amor cargado completamente con descarga desde Google Drive. ¡Que disfrutes esta sorpresa especial!');
     </script>
+
 </body>
 </html>
 
