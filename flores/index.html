@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌻 Girasol del Amor - Nuestros Momentos Especiales</title>
+    <meta name="description" content="Un ramo interactivo donde cada pétalo guarda un momento especial de nuestro amor. Crea recuerdos únicos con fotos y frases románticas.">
+    <meta name="author" content="Creado con Amor">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset y variables CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Colores principales - Girasoles */
+            --sunflower-yellow: #ffd700;
+            --bright-yellow: #ffed4e;
+            --golden-yellow: #f59e0b;
+            --warm-orange: #fb923c;
+            --sunflower-brown: #92400e;
+            --dark-brown: #451a03;
+            --soft-cream: #fffbeb;
+            --warm-cream: #fef3c7;
+            --forest-green: #2e7d32;
+            --light-green: #81c784;
+            --white: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-strong: rgba(0, 0, 0, 0.2);
+            
+            /* Gradientes para girasoles */
+            --sunflower-gradient: linear-gradient(135deg, var(--bright-yellow), var(--sunflower-yellow), var(--golden-yellow));
+            --petal-gradient: linear-gradient(145deg, #ffd700, #ffed4e, #f59e0b);
+            --center-gradient: radial-gradient(circle, var(--sunflower-brown), var(--dark-brown));
+            --background-gradient: linear-gradient(135deg, var(--soft-cream), var(--warm-cream));
+            --leaf-gradient: linear-gradient(145deg, var(--forest-green), var(--light-green));
+            
+            /* Fuentes */
+            --font-title: 'Dancing Script', cursive;
+            --font-body: 'Playfair Display', serif;
+            
+            /* Transiciones */
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Estilos base */
+        body {
+            font-family: var(--font-body);
+            background: var(--background-gradient);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .title {
+            font-family: var(--font-title);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: var(--sunflower-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px var(--shadow);
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--golden-yellow);
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        /* Contenido principal */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            width: 100%;
+        }
+
+        /* Contenedor del ramo - CENTRADO */
+        .bouquet-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeInScale 1.2s ease-out 0.3s both;
+        }
+
+        .bouquet {
+            position: relative;
+            width: clamp(300px, 50vw, 500px);
+            height: clamp(300px, 50vw, 500px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 2rem;
+            z-index: 2; /* Asegurar que esté encima del tallo */
+        }
+
+        /* Flores individuales */
+        .flower {
+            position: absolute;
+            width: clamp(80px, 10vw, 120px);
+            height: clamp(80px, 10vw, 120px);
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .flower:hover {
+            transform: scale(1.1) rotate(5deg);
+            filter: brightness(1.1);
+        }
+
+        .flower:nth-child(odd) {
+            animation-delay: -1.5s;
+        }
+
+        .flower:nth-child(even) {
+            animation-delay: -0.7s;
+        }
+
+        /* Pétalos de girasol */
+        .petal {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 80% 20% 80% 20%;
+            background: var(--petal-gradient);
+            box-shadow: 0 4px 8px var(--shadow);
+            transition: var(--transition-smooth);
+            transform-origin: center center;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        /* Distribución de pétalos en círculo (girasol típico) */
+        .petal:nth-child(1) { transform: rotate(0deg) translateY(-25px); }
+        .petal:nth-child(2) { transform: rotate(22.5deg) translateY(-25px); }
+        .petal:nth-child(3) { transform: rotate(45deg) translateY(-25px); }
+        .petal:nth-child(4) { transform: rotate(67.5deg) translateY(-25px); }
+        .petal:nth-child(5) { transform: rotate(90deg) translateY(-25px); }
+        .petal:nth-child(6) { transform: rotate(112.5deg) translateY(-25px); }
+        .petal:nth-child(7) { transform: rotate(135deg) translateY(-25px); }
+        .petal:nth-child(8) { transform: rotate(157.5deg) translateY(-25px); }
+        .petal:nth-child(9) { transform: rotate(180deg) translateY(-25px); }
+        .petal:nth-child(10) { transform: rotate(202.5deg) translateY(-25px); }
+        .petal:nth-child(11) { transform: rotate(225deg) translateY(-25px); }
+        .petal:nth-child(12) { transform: rotate(247.5deg) translateY(-25px); }
+        .petal:nth-child(13) { transform: rotate(270deg) translateY(-25px); }
+        .petal:nth-child(14) { transform: rotate(292.5deg) translateY(-25px); }
+        .petal:nth-child(15) { transform: rotate(315deg) translateY(-25px); }
+        .petal:nth-child(16) { transform: rotate(337.5deg) translateY(-25px); }
+
+        .petal.picked {
+            animation: petalFallSunflower 1.2s ease-out forwards;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .flower-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: clamp(35px, 5vw, 50px);
+            height: clamp(35px, 5vw, 50px);
+            background: var(--center-gradient);
+            border-radius: 50%;
+            box-shadow: 0 4px 8px var(--shadow-strong);
+            z-index: 3;
+            
+            /* Patrón del centro del girasol */
+            background-image: 
+                radial-gradient(circle at 30% 30%, rgba(139, 69, 19, 0.8) 2px, transparent 2px),
+                radial-gradient(circle at 70% 30%, rgba(139, 69, 19, 0.8) 2px, transparent 2px),
+                radial-gradient(circle at 50% 50%, rgba(139, 69, 19, 0.8) 1px, transparent 1px),
+                radial-gradient(circle at 30% 70%, rgba(139, 69, 19, 0.8) 2px, transparent 2px),
+                radial-gradient(circle at 70% 70%, rgba(139, 69, 19, 0.8) 2px, transparent 2px);
+            background-size: 8px 8px, 8px 8px, 6px 6px, 8px 8px, 8px 8px;
+        }
+
+        /* Tallo y hojas - CENTRADAS Y CONECTADAS AL GIRASOL */
+        .stem {
+            width: 8px;
+            height: clamp(200px, 30vw, 300px); /* Tallo más corto y centrado */
+            background: linear-gradient(to bottom, var(--light-green), var(--forest-green));
+            border-radius: 4px;
+            box-shadow: 2px 0 4px var(--shadow);
+            position: absolute;
+            left: 60%; /* Centrado perfecto */
+            transform: translateX(-50%);
+            top: calc(50% + 60px); /* Comenzar desde el centro del girasol */
+            z-index: 1; /* Detrás del girasol */
+        }
+
+        .leaves {
+            position: absolute;
+            left: 53%; /* Centrado perfecto */
+            transform: translateX(-50%);
+            top: calc(50% + 90px); /* Posicionar más cerca del centro */
+            z-index: 1;
+        }
+
+        .leaf {
+            position: absolute;
+            width: clamp(30px, 5vw, 40px);
+            height: clamp(40px, 6vw, 60px); /* Hojas más pequeñas */
+            background: var(--leaf-gradient);
+            border-radius: 0 100% 0 100%;
+            box-shadow: 0 2px 4px var(--shadow);
+            animation: leafSway 4s ease-in-out infinite;
+        }
+
+        .leaf-1 {
+            left: -20px;
+            top: 20px;
+            transform: rotate(-30deg);
+        }
+
+        .leaf-2 {
+            right: -20px;
+            top: 30px;
+            transform: rotate(30deg);
+            animation-delay: -2s;
+        }
+
+        .leaf-3 {
+            left: -10px;
+            top: 50px;
+            transform: rotate(-15deg);
+            animation-delay: -1s;
+        }
+
+        /* Instrucciones */
+        .instructions {
+            text-align: center;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .instructions p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: var(--golden-yellow);
+            margin-bottom: 1rem;
+        }
+
+        .counter {
+            background: var(--white);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px var(--shadow);
+            border: 2px solid var(--warm-cream);
+            display: inline-block;
+        }
+
+        #petalCount {
+            font-weight: 600;
+            color: var(--golden-yellow);
+            font-size: 1.2rem;
+        }
+
+        /* Popup */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+        }
+
+        .popup {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px var(--shadow-strong);
+            max-width: 90vw;
+            max-height: 90vh;
+            width: clamp(300px, 80vw, 500px);
+            position: relative;
+            animation: popupScale 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow: hidden;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--golden-yellow);
+            cursor: pointer;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+        }
+
+        .close-btn:hover {
+            background: var(--warm-cream);
+            transform: scale(1.1);
+        }
+
+        .popup-content {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            margin-bottom: 1.5rem;
+            border-radius: 15px;
+            overflow: hidden;
+            background: var(--warm-cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--sunflower-yellow);
+        }
+
+        #popupImage {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .memory-text {
+            background: var(--soft-cream);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--sunflower-yellow);
+            font-style: italic;
+            color: var(--sunflower-brown);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            text-align: center;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        /* Popup final */
+        .final-popup {
+            max-width: 90vw;
+            width: clamp(350px, 85vw, 600px);
+        }
+
+        .final-popup h2 {
+            font-family: var(--font-title);
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: var(--golden-yellow);
+            margin-bottom: 1rem;
+        }
+
+        .final-popup p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .final-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .download-btn {
+            background: var(--sunflower-gradient);
+            color: var(--white);
+            border: none;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .final-message {
+            font-style: italic;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: var(--sunflower-brown);
+            text-align: center;
+            line-height: 1.6;
+            background: var(--soft-cream);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--sunflower-yellow);
+        }
+
+        .restart-btn {
+            background: var(--forest-green);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            margin-top: 1rem;
+        }
+
+        .restart-btn:hover {
+            background: var(--light-green);
+            transform: translateY(-2px);
+        }
+
+        /* Partículas de corazón */
+        .heart-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            font-size: 20px;
+            color: var(--sunflower-yellow);
+            opacity: 0.8;
+            animation: heartFloat 3s ease-out forwards;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes popupScale {
+            from {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes leafSway {
+            0%, 100% {
+                transform: rotate(-30deg);
+            }
+            50% {
+                transform: rotate(-25deg);
+            }
+        }
+
+        @keyframes petalFallSunflower {
+            0% {
+                transform: rotate(0deg) translateY(0px) scale(1);
+                opacity: 1;
+            }
+            25% {
+                transform: rotate(90deg) translateY(50px) scale(0.9);
+                opacity: 0.8;
+            }
+            50% {
+                transform: rotate(270deg) translateY(120px) scale(0.7);
+                opacity: 0.6;
+            }
+            75% {
+                transform: rotate(450deg) translateY(180px) scale(0.5);
+                opacity: 0.3;
+            }
+            100% {
+                transform: rotate(720deg) translateY(250px) scale(0.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            25% {
+                transform: translateY(-30px) translateX(var(--random-x, 0px)) rotate(90deg) scale(var(--random-scale, 1));
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-60px) translateX(var(--random-x, 0px)) rotate(180deg) scale(var(--random-scale, 1));
+                opacity: 0.6;
+            }
+            75% {
+                transform: translateY(-90px) translateX(var(--random-x, 0px)) rotate(270deg) scale(var(--random-scale, 1));
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(var(--random-y, -120px)) translateX(var(--random-x, 0px)) rotate(var(--random-rotation, 360deg)) scale(0.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes heartFall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes celebrationPop {
+            0% { transform: scale(0.5) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1.5) rotate(180deg); opacity: 1; }
+            100% { transform: scale(1) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem 0.5rem;
+            }
+            
+            .header {
+                margin-bottom: 2rem;
+            }
+            
+            .bouquet {
+                width: 90vw;
+                height: 90vw;
+                max-width: 350px;
+                max-height: 350px;
+            }
+            
+            .flower {
+                width: clamp(50px, 12vw, 70px);
+                height: clamp(50px, 12vw, 70px);
+            }
+            
+            .stem {
+                height: clamp(150px, 25vw, 200px);
+                top: calc(50% + 30px);
+            }
+            
+            .leaves {
+                top: calc(50% + 40px);
+            }
+            
+            .popup {
+                margin: 1rem;
+                max-height: 85vh;
+                overflow-y: auto;
+            }
+            
+            .popup-content {
+                padding: 1.5rem;
+            }
+            
+            .image-container {
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .bouquet {
+                padding: 1rem;
+            }
+            
+            .stem {
+                height: clamp(100px, 20vw, 150px);
+                top: calc(50% + 20px);
+            }
+            
+            .leaves {
+                top: calc(50% + 30px);
+            }
+            
+            .leaf {
+                width: 25px;
+                height: 35px;
+            }
+            
+            .leaf-1 {
+                left: -15px;
+                top: 15px;
+            }
+            
+            .leaf-2 {
+                right: -15px;
+                top: 20px;
+            }
+            
+            .leaf-3 {
+                left: -8px;
+                top: 35px;
+            }
+            
+            .final-message {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Nuestro Girasol del Amor</h1>
+            <p class="subtitle">Cada pétalo guarda un momento especial 🌻</p>
+        </header>
+
+        <main class="main-content">
+            <div class="bouquet-container">
+                <div class="bouquet" id="bouquet">
+                    <!-- Las flores se generarán dinámicamente -->
+                </div>
+                <div class="stem"></div>
+                <div class="leaves">
+                    <div class="leaf leaf-1"></div>
+                    <div class="leaf leaf-2"></div>
+                    <div class="leaf leaf-3"></div>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <p id="instructionText">Toca cada pétalo para descubrir nuestros momentos especiales 🌻</p>
+                <div class="counter">
+                    <span id="petalCount">16</span> pétalos dorados por descubrir
+                </div>
+            </div>
+        </main>
+        
+        <!-- Popup para mostrar imagen y frase predefinidas -->
+        <div class="popup-overlay" id="popupOverlay">
+            <div class="popup">
+                <button class="close-btn" id="closeBtn">&times;</button>
+                <div class="popup-content">
+                    <div class="image-container">
+                        <img id="popupImage" src="" alt="Nuestro momento especial">
+                    </div>
+                    <!-- La frase se agregará dinámicamente aquí -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Popup final -->
+        <div class="popup-overlay" id="finalPopup">
+            <div class="popup final-popup">
+                <div class="popup-content">
+                    <h2>¡Has descubierto todos nuestros recuerdos! 🌻</h2>
+                    <p>Cada pétalo dorado guardaba un momento especial de nuestro amor brillante</p>
+                    <div class="final-actions">
+                        <button class="download-btn" id="downloadBtn">
+                            🎵 Descargar nuestra canción del girasol
+                        </button>
+                        <button class="restart-btn" id="restartBtn">
+                            🔄 Comenzar de nuevo
+                        </button>
+                        <p class="final-message">
+                            "Como los girasoles que siempre siguen al sol, 
+                            mi corazón siempre te sigue a ti. 
+                            Eres la luz que ilumina cada uno de mis días 
+                            y la razón por la que mi amor florece cada amanecer."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de la aplicación - Girasoles
+        const CONFIG = {
+            totalPetals: 16, 
+            totalFlowers: 1,  
+            storageKey: 'sunflowerLoveData',
+            audioPath: 'assets/audio/love-song.mp3', // Ruta corregida para MP3
+            imagesPath: 'assets/images/' // Ruta para imágenes locales
+        };
+
+        // Fotos y frases predefinidas (ahora usando rutas locales)
+        const MEMORIES = {
+            photos: [
+                'photo1.jpg', 'photo2.jpg', 'photo3.jpg', 'photo4.jpg',
+                'photo5.jpg', 'photo6.jpg', 'photo7.jpg', 'photo8.jpg',
+                'photo9.jpg', 'photo10.jpg', 'photo11.jpg', 'photo12.jpg',
+                'photo13.jpg', 'photo14.jpg', 'photo15.jpg', 'photo16.jpg'
+            ],
+            phrases: [
+                "💛 Cuando te conocí, mi mundo se llenó de luz como un girasol al amanecer",
+                "🌻 Eres mi sol en los días grises, mi razón para sonreír cada mañana", 
+                "✨ Contigo aprendí que el amor verdadero es como los girasoles: siempre busca la luz",
+                "💕 Tu risa es la melodía más hermosa que he escuchado en mi vida",
+                "🌟 En tus ojos veo mi futuro, y es más brillante que mil soles",
+                "💖 Cada día a tu lado es una nueva aventura llena de amor y felicidad",
+                "🌻 Eres mi persona favorita, mi cómplice, mi mejor amigo y mi gran amor",
+                "💛 Gracias por ser la luz que ilumina mis días más oscuros",
+                "✨ Contigo el tiempo se detiene y a la vez vuela demasiado rápido",
+                "💕 Eres el motivo por el que creo en los finales felices y los cuentos de hadas",
+                "🌟 Tu amor es mi hogar, mi refugio y mi lugar seguro en este mundo",
+                "💖 Cada momento contigo es un regalo que atesoro en mi corazón",
+                "🌻 Eres mi compañero de vida, mi mejor decisión y mi mayor bendición",
+                "💛 Con una mirada tuya puedes cambiar completamente mi día",
+                "✨ Eres mi definición perfecta de amor, felicidad y tranquilidad",
+                "💕 Gracias por amarme tal como soy y por hacerme una mejor persona cada día"
+            ]
+        };
+
+        // Estado de la aplicación
+        let appState = {
+            petalCount: CONFIG.totalPetals,
+            pickedPetals: new Set(),
+            currentPetalId: null,
+            isCompleted: false
+        };
+
+        // Referencias DOM
+        const elements = {
+            bouquet: document.getElementById('bouquet'),
+            petalCount: document.getElementById('petalCount'),
+            popupOverlay: document.getElementById('popupOverlay'),
+            finalPopup: document.getElementById('finalPopup'),
+            closeBtn: document.getElementById('closeBtn'),
+            downloadBtn: document.getElementById('downloadBtn'),
+            restartBtn: document.getElementById('restartBtn'),
+            popupImage: document.getElementById('popupImage'),
+            instructionText: document.getElementById('instructionText')
+        };
+
+        // Inicialización de la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌻 Iniciando Girasol del Amor...');
+            initializeApp();
+            setupEventListeners();
+            generateSunflower();
+        });
+
+        // Inicializar la aplicación
+        function initializeApp() {
+            // Verificar si hay que reiniciar automáticamente
+            const shouldRestart = sessionStorage.getItem('shouldRestart');
+            if (shouldRestart === 'true') {
+                sessionStorage.removeItem('shouldRestart');
+                resetApp(false);
+                return;
+            }
+
+            // Cargar datos guardados si existen
+            loadSavedData();
+            updatePetalCounter();
+        }
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Cerrar popup
+            elements.closeBtn.addEventListener('click', closePopup);
+            elements.popupOverlay.addEventListener('click', function(e) {
+                if (e.target === elements.popupOverlay) {
+                    closePopup();
+                }
+            });
+            
+            // Descargar audio (corregido para descargar MP3)
+            elements.downloadBtn.addEventListener('click', downloadAudio);
+            
+            // Botón de reinicio
+            elements.restartBtn.addEventListener('click', () => {
+                sessionStorage.setItem('shouldRestart', 'true');
+                location.reload();
+            });
+            
+            // Cerrar popup final
+            elements.finalPopup.addEventListener('click', function(e) {
+                if (e.target === elements.finalPopup) {
+                    elements.finalPopup.classList.remove('active');
+                }
+            });
+            
+            // Escapar para cerrar popups
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closePopup();
+                    elements.finalPopup.classList.remove('active');
+                }
+            });
+        }
+
+        // Generar el girasol principal
+        function generateSunflower() {
+            elements.bouquet.innerHTML = '';
+            const sunflower = createSunflower();
+            elements.bouquet.appendChild(sunflower);
+        }
+
+        // Crear el girasol con 16 pétalos
+        function createSunflower() {
+            const flower = document.createElement('div');
+            flower.className = 'flower';
+            flower.style.left = '50%';
+            flower.style.top = '50%';
+            flower.style.transform = 'translate(-50%, -50%)';
+            flower.style.animationDelay = '0s';
+            
+            // Crear 16 pétalos
+            for (let i = 0; i < CONFIG.totalPetals; i++) {
+                if (!appState.pickedPetals.has(i)) {
+                    const petal = createPetal(i);
+                    flower.appendChild(petal);
+                }
+            }
+            
+            // Centro del girasol
+            const center = document.createElement('div');
+            center.className = 'flower-center';
+            flower.appendChild(center);
+            
+            return flower;
+        }
+
+        // Crear un pétalo individual
+        function createPetal(petalId) {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.dataset.petalId = petalId;
+            
+            // Calcular rotación para distribución uniforme
+            const rotation = (petalId * 22.5);
+            petal.style.transform = `rotate(${rotation}deg) translateY(-25px)`;
+            
+            // Event listener para clic
+            petal.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handlePetalClick(petalId);
+            });
+            
+            // Efecto hover especial
+            petal.addEventListener('mouseenter', () => {
+                petal.style.transform = `rotate(${rotation}deg) translateY(-25px) scale(1.1)`;
+                petal.style.filter = 'brightness(1.2) drop-shadow(0 0 10px rgba(255, 215, 0, 0.8))';
+            });
+            
+            petal.addEventListener('mouseleave', () => {
+                petal.style.transform = `rotate(${rotation}deg) translateY(-25px) scale(1)`;
+                petal.style.filter = 'none';
+            });
+            
+            return petal;
+        }
+
+        // Manejar clic en pétalo
+        function handlePetalClick(petalId) {
+            if (appState.pickedPetals.has(petalId)) return;
+            
+            console.log(`🌻 Pétalo ${petalId + 1} seleccionado`);
+            
+            // Marcar pétalo como recogido
+            appState.pickedPetals.add(petalId);
+            appState.currentPetalId = petalId;
+            
+            // Animar el pétalo cayendo
+            const petal = document.querySelector(`[data-petal-id="${petalId}"]`);
+            if (petal) {
+                petal.classList.add('picked');
+                
+                // Crear partículas de corazón
+                createHeartParticles(petal);
+                
+                // Remover el pétalo después de la animación
+                setTimeout(() => {
+                    petal.remove();
+                    appState.petalCount--;
+                    updatePetalCounter();
+                    saveToStorage();
+                    
+                    // Verificar si es el último pétalo
+                    if (appState.petalCount === 0) {
+                        appState.isCompleted = true;
+                        saveToStorage();
+                        setTimeout(() => showFinalPopup(), 1500);
+                    }
+                }, 1200);
+            }
+            
+            // Mostrar popup con la memoria
+            showMemoryPopup(petalId);
+        }
+
+        // Crear partículas de corazón cuando se recoge un pétalo
+        function createHeartParticles(petal) {
+            const rect = petal.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    createHeartParticle(centerX, centerY);
+                }, i * 100);
+            }
+        }
+
+        // Crear una partícula de corazón individual
+        function createHeartParticle(x, y) {
+            const hearts = ['💛', '🧡', '💖', '✨', '🌟'];
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            
+            const randomX = (Math.random() - 0.5) * 100;
+            const randomY = Math.random() * 50 + 100;
+            const randomRotation = Math.random() * 360;
+            const randomScale = 0.8 + Math.random() * 0.4;
+            
+            heart.style.setProperty('--random-x', randomX + 'px');
+            heart.style.setProperty('--random-y', '-' + randomY + 'px');
+            heart.style.setProperty('--random-rotation', randomRotation + 'deg');
+            heart.style.setProperty('--random-scale', randomScale);
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                if (heart.parentNode) {
+                    heart.remove();
+                }
+            }, 3000);
+        }
+
+        // Mostrar popup de memoria (corregido para usar imágenes locales)
+        function showMemoryPopup(petalId) {
+            const photoFileName = MEMORIES.photos[petalId];
+            const photoPath = CONFIG.imagesPath + photoFileName;
+            const phrase = MEMORIES.phrases[petalId];
+            
+            // Configurar imagen con manejo de errores
+            elements.popupImage.src = photoPath;
+            elements.popupImage.style.display = 'block';
+            
+            // Manejar error de carga de imagen
+            elements.popupImage.onerror = function() {
+                this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2ZmZDcwMCIgb3BhY2l0eT0iMC4zIi8+PHRleHQgeD0iMjAwIiB5PSIxNTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzkyNDAwZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+MuyBSZWN1ZXJkbyAjJHtwZXRhbElkICsgMX0g8J+MuzwvdGV4dD48L3N2Zz4=';
+                console.warn(`No se pudo cargar la imagen: ${photoPath}`);
+            };
+            
+            // Configurar frase
+            let memoryText = document.querySelector('.memory-text');
+            if (!memoryText) {
+                memoryText = document.createElement('div');
+                memoryText.className = 'memory-text';
+                document.querySelector('.popup-content').appendChild(memoryText);
+            }
+            memoryText.textContent = phrase;
+            
+            elements.popupOverlay.classList.add('active');
+            
+            setTimeout(() => {
+                elements.popupImage.style.animation = 'fadeInScale 0.6s ease-out';
+                memoryText.style.animation = 'fadeInUp 0.8s ease-out 0.2s both';
+            }, 100);
+        }
+
+        // Cerrar popup
+        function closePopup() {
+            elements.popupOverlay.classList.remove('active');
+            appState.currentPetalId = null;
+            
+            elements.popupImage.style.animation = '';
+            const memoryText = document.querySelector('.memory-text');
+            if (memoryText) {
+                memoryText.style.animation = '';
+            }
+        }
+
+        // Actualizar contador de pétalos
+        function updatePetalCounter() {
+            elements.petalCount.textContent = appState.petalCount;
+            
+            elements.petalCount.parentElement.style.transform = 'scale(1.2)';
+            elements.petalCount.parentElement.style.color = 'var(--golden-yellow)';
+            setTimeout(() => {
+                elements.petalCount.parentElement.style.transform = 'scale(1)';
+            }, 300);
+            
+            // Cambiar mensaje según pétalos restantes
+            if (appState.petalCount <= 5 && appState.petalCount > 0) {
+                elements.instructionText.textContent = `¡Solo quedan ${appState.petalCount} pétalos! La sorpresa está cerca 🌻`;
+            } else if (appState.petalCount === 0) {
+                elements.instructionText.textContent = '¡Has descubierto todos nuestros recuerdos! 💛';
+            } else {
+                elements.instructionText.textContent = 'Toca cada pétalo para descubrir nuestros momentos especiales 🌻';
+            }
+        }
+
+        // Mostrar popup final
+        function showFinalPopup() {
+            elements.finalPopup.classList.add('active');
+            createGoldenHeartRain();
+            document.body.style.background = 'linear-gradient(135deg, #fffbeb, #fef3c7, #fde68a)';
+            
+            setTimeout(() => {
+                createCelebrationBurst();
+            }, 500);
+        }
+
+        // Crear lluvia de corazones dorados
+        function createGoldenHeartRain() {
+            const container = document.createElement('div');
+            container.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                pointer-events: none; z-index: 999;
+            `;
+            
+            document.body.appendChild(container);
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    createFallingHeart(container);
+                }, i * 100);
+            }
+            
+            setTimeout(() => {
+                container.remove();
+                document.body.style.background = '';
+            }, 15000);
+        }
+
+        // Crear corazón cayendo
+        function createFallingHeart(container) {
+            const hearts = ['💛', '🧡', '🌻', '✨', '🌟', '💖'];
+            const heart = document.createElement('div');
+            heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+            heart.style.cssText = `
+                position: absolute;
+                font-size: ${Math.random() * 25 + 15}px;
+                left: ${Math.random() * 100}%;
+                top: -50px;
+                pointer-events: none;
+                animation: heartFall ${4 + Math.random() * 3}s linear forwards;
+                opacity: ${0.7 + Math.random() * 0.3};
+            `;
+            
+            container.appendChild(heart);
+            setTimeout(() => heart.remove(), 8000);
+        }
+
+        // Crear explosión de celebración
+        function createCelebrationBurst() {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            for (let i = 0; i < 20; i++) {
+                const angle = (i * 18) * Math.PI / 180;
+                const distance = 150 + Math.random() * 100;
+                const x = centerX + Math.cos(angle) * distance;
+                const y = centerY + Math.sin(angle) * distance;
+                
+                setTimeout(() => {
+                    createCelebrationHeart(x, y);
+                }, i * 50);
+            }
+        }
+
+        // Crear corazón de celebración
+        function createCelebrationHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.innerHTML = '🌻';
+            heart.style.cssText = `
+                position: fixed; font-size: 35px; left: ${x}px; top: ${y}px;
+                pointer-events: none; z-index: 1002;
+                animation: celebrationPop 2s ease-out forwards;
+            `;
+            
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 2000);
+        }
+
+        // Descargar audio (corregido para intentar descargar MP3 real)
+        function downloadAudio() {
+            // Intentar descargar el archivo MP3 real
+            fetch(CONFIG.audioPath)
+                .then(response => {
+                    if (response.ok) {
+                        return response.blob();
+                    } else {
+                        throw new Error('Audio file not found');
+                    }
+                })
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'Nuestra_Cancion_del_Girasol.mp3';
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    showSuccessMessage('💛 ¡Canción descargada! Disfruta de nuestro tema especial.');
+                })
+                .catch(() => {
+                    // Si no encuentra el MP3, crear mensaje de texto como respaldo
+                    const loveMessage = `
+🌻 Nuestra Canción del Girasol 🌻
+
+Mi amor,
+
+Como los girasoles que siempre siguen al sol, mi corazón siempre te sigue a ti. Cada pétalo que acabas de descubrir representa un momento único que hemos vivido juntos.
+
+Para escuchar nuestra canción especial, coloca el archivo "love-song.mp3" en la carpeta "assets/audio/" de este proyecto.
+
+Con todo mi amor infinito,
+Tu persona especial 💛
+
+---
+Archivo creado el: ${new Date().toLocaleDateString('es-ES', { 
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+})}
+                    `;
+                    
+                    const blob = new Blob([loveMessage], { type: 'text/plain;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'Instrucciones_Cancion_del_Girasol.txt';
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    showSuccessMessage('💛 Agrega "love-song.mp3" en assets/audio/ para descargar la canción.');
+                });
+        }
+
+        // Mostrar mensaje de éxito
+        function showSuccessMessage(message) {
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed; top: 20px; right: 20px;
+                background: linear-gradient(135deg, #ffd700, #f59e0b);
+                color: #451a03; padding: 1rem 1.5rem; border-radius: 15px;
+                box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3); z-index: 1001;
+                animation: slideInRight 0.5s ease-out; font-family: 'Playfair Display', serif;
+                font-weight: 500; max-width: 300px; font-size: 0.9rem; line-height: 1.4;
+            `;
+            successDiv.textContent = message;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.animation = 'slideOutRight 0.5s ease-out forwards';
+                setTimeout(() => successDiv.remove(), 500);
+            }, 4000);
+        }
+
+        // Guardar datos
+        function saveToStorage() {
+            const dataToSave = {
+                pickedPetals: Array.from(appState.pickedPetals),
+                petalCount: appState.petalCount,
+                isCompleted: appState.isCompleted,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            try {
+                localStorage.setItem(CONFIG.storageKey, JSON.stringify(dataToSave));
+            } catch (e) {
+                console.warn('No se pudo guardar en localStorage:', e);
+            }
+        }
+
+        // Cargar datos guardados
+        // Cargar datos guardados
+        function loadSavedData() {
+            try {
+                const saved = localStorage.getItem(CONFIG.storageKey);
+                if (saved) {
+                    const data = JSON.parse(saved);
+
+                    // Reiniciar siempre al cargar
+                    appState.pickedPetals = new Set();
+                    appState.petalCount = CONFIG.totalPetals;
+                    appState.isCompleted = false;
+
+                    console.log(`🌻 Datos reiniciados: ${appState.pickedPetals.size} pétalos recogidos`);
+
+                    // Guardar inmediatamente para reflejar reinicio
+                    localStorage.setItem(CONFIG.storageKey, JSON.stringify({
+                        pickedPetals: Array.from(appState.pickedPetals),
+                        isCompleted: appState.isCompleted
+                    }));
+                }
+            } catch (e) {
+                console.warn('Error al cargar datos guardados:', e);
+            }
+        }
+
+        // Resetear aplicación
+        function resetApp(confirm = true) {
+            if (confirm && !window.confirm('¿Estás seguro de que quieres resetear todos los recuerdos? Los pétalos volverán a crecer.')) {
+                return;
+            }
+            
+            localStorage.removeItem(CONFIG.storageKey);
+            appState = {
+                petalCount: CONFIG.totalPetals,
+                pickedPetals: new Set(),
+                currentPetalId: null,
+                isCompleted: false
+            };
+            
+            generateSunflower();
+            updatePetalCounter();
+            elements.finalPopup.classList.remove('active');
+        }
+
+        // Exponer funciones globales para debugging
+        window.sunflowerApp = {
+            resetApp,
+            saveToStorage,
+            appState,
+            CONFIG,
+            MEMORIES
+        };
+
+        console.log('🌻 Girasol del Amor cargado completamente. ¡Que disfrutes esta sorpresa especial! 💛');
+    </script>
+</body>
+</html>
+
